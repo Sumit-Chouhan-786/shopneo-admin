@@ -1,15 +1,9 @@
-/**
- * ⚠ These are used just to render the Sidebar!
- * You can include any link here, local or external.
- *
- * If you're looking to actual Router routes, go to
- * `routes/index.js`
- */
+
 const routes = [
   {
-    path: '/app/dashboard', // the url
-    icon: 'HomeIcon', // the component being exported from icons/index.js
-    name: 'Dashboard', // name that appear in Sidebar
+    path: '/app/dashboard', 
+    icon: 'HomeIcon', 
+    name: 'Dashboard', 
   },
   {
     path: '/app/add-customer',
@@ -25,6 +19,11 @@ const routes = [
     path: '/app/add-customer-blog',
     icon: 'FormsIcon',
     name: 'Add Customer Blog',
+  },
+  {
+    path: '/app/add-customer-business-hours',
+    icon: 'FormsIcon',
+    name: 'Add Business Hours',
   },
   {
     path: '/app/all-customers',

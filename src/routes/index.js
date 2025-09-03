@@ -9,6 +9,7 @@ import AddCustomerBlog from '../components/common/AddCustomerBlog'
 import UpdateCustomerBlog from '../components/common/UpdateCustomerBlog'
 import AllCustomers from '../components/common/AllCustomers'
 import AllSellers from '../components/common/AllSellers'
+import AddCustomerBusinessHour from '../components/common/AddCustomerBusinessHour'
 
 // use lazy for better code splitting, a.k.a. load faster
 const Dashboard = lazy(() => import('../pages/Dashboard'))
@@ -50,6 +51,10 @@ const routes = [
    {
     path: '/app/update-customer-blog/:id',
     component: UpdateCustomer,
+  },
+   {
+    path: '/app/add-customer-business-hours',
+    component: AddCustomerBusinessHour,
   },
   {
     path: '/update-customer-product',
