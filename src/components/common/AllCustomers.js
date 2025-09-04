@@ -23,7 +23,7 @@ function AllCustomers({ history }) {
   const [customers, setCustomers] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all"); // all, active, inactive
+  const [filter, setFilter] = useState("all"); 
 
   const resultsPerPage = 10;
 

@@ -16,13 +16,13 @@ import {
   Input,
   Select,
   Label,
-  Textarea,
+  Textarea
 } from "@windmill/react-ui";
 import api from "../../api/axios";
 import { toast } from "react-hot-toast";
 import Modal from "react-modal";
 
-Modal.setAppElement("#root");
+Modal.setAppElement("#root"); 
 
 function AddCustomerBlog({ history }) {
   const [customers, setCustomers] = useState([]);
@@ -35,10 +35,11 @@ function AddCustomerBlog({ history }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [formValues, setFormValues] = useState({
-    heading: "",
+    name: "",
+    whatsappUrl: "",
     description: "",
     image: null,
-    agree: false,
+    agree: false
   });
 
   // Fetch customers
@@ -56,17 +57,18 @@ function AddCustomerBlog({ history }) {
   }, []);
 
   // Open modal
-  const openModal = (customer) => {
-    console.log("Selected Customer ID:", customer._id);
-    setSelectedCustomer(customer);
-    setFormValues({
-      heading: "",
-      description: "",
-      image: null,
-      agree: false,
-    });
-    setShowModal(true);
-  };
+const openModal = (customer) => {
+  console.log("Selected Customer ID:", customer._id);
+  setSelectedCustomer(customer);
+  setFormValues({
+    heading: "",
+    description: "",
+    image: null,
+    agree: false,
+  });
+  setShowModal(true);
+};
+
 
   const closeModal = () => {
     setSelectedCustomer(null);
@@ -86,35 +88,35 @@ function AddCustomerBlog({ history }) {
   };
 
   // Submit blog form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formValues.agree) {
-      toast.error("⚠️ You must agree to the privacy policy!");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!formValues.agree) {
+    toast.error("⚠️ You must agree to the privacy policy!");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("heading", formValues.heading);
-    formData.append("description", formValues.description);
-    if (formValues.image) formData.append("image", formValues.image);
+  const formData = new FormData();
+  formData.append("heading", formValues.heading);
+  formData.append("description", formValues.description);
+  if (formValues.image) formData.append("image", formValues.image);
 
-    try {
-      await toast.promise(
-        api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        }),
-        {
-          loading: "Adding blog...",
-          success: "✅ Blog added successfully!",
-          error: "❌ Failed to add blog",
-        }
-      );
-      closeModal();
-    } catch (error) {
-      toast.error("Something went wrong!");
-      console.error("Add blog error:", error.response?.data || error.message);
-    }
-  };
+  try {
+    await toast.promise(
+      api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+      {
+        loading: "Adding blog...",
+        success: "✅ Blog added successfully!",
+        error: "❌ Failed to add Blog",
+      }
+    );
+    closeModal();
+  } catch (error) {
+    toast.error("Something went wrong!");
+    console.error("Add Blog error:", error.response?.data || error.message);
+  }
+};
 
   // Filter + Search
   const filteredCustomers = customers.filter((c) => {
@@ -175,39 +177,25 @@ function AddCustomerBlog({ history }) {
                   <div className="flex items-center text-sm">
                     <Avatar
                       className="hidden mr-3 md:block"
-                      src={customer.profileImage?.url || "https://via.placeholder.com/40"}
+                      src={customer.profileImage.url}
                       alt="User avatar"
                     />
                     <div>
                       <p className="font-semibold">{customer.name}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {customer.slug}
-                      </p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{customer.slug}</p>
                     </div>
                   </div>
                 </TableCell>
 
-                <TableCell>
-                  <span className="text-sm">{customer.email || "-"}</span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm">{customer.contact || "-"}</span>
-                </TableCell>
-                <TableCell>
-                  <span className="text-sm">{customer.businessName || "-"}</span>
-                </TableCell>
-                <TableCell>
-                  <Badge type="success">Active</Badge>
-                </TableCell>
+                <TableCell><span className="text-sm">{customer.email || "-"}</span></TableCell>
+                <TableCell><span className="text-sm">{customer.contact || "-"}</span></TableCell>
+                <TableCell><span className="text-sm">{customer.businessName || "-"}</span></TableCell>
+                <TableCell><Badge type="success">Active</Badge></TableCell>
 
                 <TableCell>
                   <div className="flex items-center space-x-2">
-                    {/* Add Blog Button */}
-                    <Button
-                      layout="outline"
-                      size="small"
-                      onClick={() => openModal(customer)}
-                    >
+                    {/* Add blog Button */}
+                    <Button layout="outline" size="small" onClick={() => openModal(customer)}>
                       Add Blog
                     </Button>
 
@@ -215,9 +203,7 @@ function AddCustomerBlog({ history }) {
                     <Button
                       layout="outline"
                       size="small"
-                      onClick={() =>
-                        history.push(`/app/all-customer-blogs/${customer._id}`)
-                      }
+                      onClick={() => history.push(`/app/all-customer-blogs/${customer._id}`)}
                     >
                       All Blogs
                     </Button>
@@ -246,53 +232,26 @@ function AddCustomerBlog({ history }) {
         className="bg-white p-6 rounded shadow-lg max-w-lg mx-auto mt-20"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
-        <h2 className="text-xl font-bold mb-4">
-          Add Blog for {selectedCustomer?.name}
-        </h2>
+        <h2 className="text-xl font-bold mb-4">Add blog for {selectedCustomer?.name}</h2>
         <form onSubmit={handleSubmit}>
           <Label className="mt-2">
             <span>Heading</span>
-            <Input
-              name="heading"
-              value={formValues.heading}
-              onChange={handleChange}
-              required
-            />
+            <Input name="heading" value={formValues.heading} onChange={handleChange} required />
           </Label>
           <Label className="mt-2">
             <span>Description</span>
-            <Textarea
-              name="description"
-              value={formValues.description}
-              onChange={handleChange}
-              rows="3"
-            />
+            <Textarea name="description" value={formValues.description} onChange={handleChange} rows="3" />
           </Label>
           <Label className="mt-2">
             <span>Blog Image</span>
-            <Input
-              type="file"
-              name="image"
-              accept="image/*"
-              onChange={handleChange}
-            />
+            <Input type="file" name="image" accept="image/*" onChange={handleChange} />
           </Label>
           <Label className="mt-2" check>
-            <Input
-              type="checkbox"
-              name="agree"
-              checked={formValues.agree}
-              onChange={handleChange}
-              required
-            />
-            <span className="ml-2">
-              I agree to the <span className="underline">privacy policy</span>
-            </span>
+            <Input type="checkbox" name="agree" checked={formValues.agree} onChange={handleChange} required />
+            <span className="ml-2">I agree to the <span className="underline">privacy policy</span></span>
           </Label>
           <div className="flex justify-end mt-4 space-x-2">
-            <Button layout="outline" onClick={closeModal}>
-              Cancel
-            </Button>
+            <Button layout="outline" onClick={closeModal}>Cancel</Button>
             <Button type="submit">Add Blog</Button>
           </div>
         </form>
