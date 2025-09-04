@@ -10,12 +10,16 @@ import UpdateCustomer from '../components/common/UpdateCustomer'
 import UpdateSeller from '../components/common/UpdateSeller'
 import AllCustomerProducts from '../components/common/AllCustomerProducts'
 import AllCustomerBlogs from '../components/common/AllCustomerBlogs'
+import PrivateRoute from '../components/common/PrivateRoute'
 
 const Page404 = lazy(() => import('../pages/404'))
 
 function Layout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
-  let location = useLocation()
+  const location = useLocation()
+
+  // Check login status (replace with your auth logic, e.g., token in localStorage)
+  const isAuthenticated = !!localStorage.getItem("token") 
 
   useEffect(() => {
     closeSidebar()
@@ -32,23 +36,44 @@ function Layout() {
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
             <Switch>
+              {/* Public routes if needed */}
+              <Redirect exact from="/app" to="/app/dashboard" />
+
+              {/* Protected routes */}
               {routes.map((route, i) => {
                 return route.component ? (
-                  <Route
+                  <PrivateRoute
                     key={i}
-                    exact={true}
+                    exact
                     path={`/app${route.path}`}
-                    render={(props) => <route.component {...props} />}
+                    component={route.component}
+                    isAuthenticated={isAuthenticated}
                   />
                 ) : null
               })}
-              <Redirect exact from="/app" to="/app/dashboard" />
-                 {/* Put dynamic route BEFORE /app */}
-        <Route path="/app/update-customer/:id" component={UpdateCustomer} />
-        <Route path="/app/update-seller/:id" component={UpdateSeller} />
-        // Route
-<Route path="/app/all-customer-products/:customerId" component={AllCustomerProducts} />
-<Route path="/app/all-customer-blogs/:customerId" component={AllCustomerBlogs} />
+
+              {/* Dynamic protected routes */}
+              <PrivateRoute
+                path="/app/update-customer/:id"
+                component={UpdateCustomer}
+                isAuthenticated={isAuthenticated}
+              />
+              <PrivateRoute
+                path="/app/update-seller/:id"
+                component={UpdateSeller}
+                isAuthenticated={isAuthenticated}
+              />
+              <PrivateRoute
+                path="/app/all-customer-products/:customerId"
+                component={AllCustomerProducts}
+                isAuthenticated={isAuthenticated}
+              />
+              <PrivateRoute
+                path="/app/all-customer-blogs/:customerId"
+                component={AllCustomerBlogs}
+                isAuthenticated={isAuthenticated}
+              />
+
               <Route component={Page404} />
             </Switch>
           </Suspense>

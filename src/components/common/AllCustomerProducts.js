@@ -20,7 +20,7 @@ import {
 } from "@windmill/react-ui";
 import { EditIcon, TrashIcon } from "../../icons";
 import api from "../../api/axios";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root");
@@ -147,6 +147,7 @@ function AllCustomerProducts() {
 
   return (
     <>
+     <Toaster position="top-right" reverseOrder={false} />
       <PageTitle>Customer Products</PageTitle>
       <SectionTitle>All Products for Customer</SectionTitle>
 

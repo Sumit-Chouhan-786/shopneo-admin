@@ -19,7 +19,7 @@ import {
   Textarea
 } from "@windmill/react-ui";
 import api from "../../api/axios";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import Modal from "react-modal";
 
 Modal.setAppElement("#root"); 
@@ -86,37 +86,52 @@ const openModal = (customer) => {
       setFormValues({ ...formValues, [name]: value });
     }
   };
-
-  // Submit blog form
+// handel submit
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  // ✅ Validate agreement
   if (!formValues.agree) {
     toast.error("⚠️ You must agree to the privacy policy!");
     return;
   }
 
+  // ✅ Prepare FormData
   const formData = new FormData();
   formData.append("heading", formValues.heading);
   formData.append("description", formValues.description);
   if (formValues.image) formData.append("image", formValues.image);
 
   try {
-    await toast.promise(
-      api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      }),
-      {
-        loading: "Adding blog...",
-        success: "✅ Blog added successfully!",
-        error: "❌ Failed to add Blog",
-      }
-    );
-    closeModal();
+    // ✅ Send API request
+    await api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    // ✅ Show success toast
+    toast.success("✅ Blog added successfully!");
+
+    // ✅ Close modal after short delay so toast is visible
+    setTimeout(() => {
+      closeModal();
+
+      // ✅ Reset form
+      setFormValues({
+        heading: "",
+        description: "",
+        image: null,
+        agree: false,
+      });
+    }, 300);
+
   } catch (error) {
-    toast.error("Something went wrong!");
+    // ❌ Show error toast
+    toast.error("❌ Failed to add Blog!");
     console.error("Add Blog error:", error.response?.data || error.message);
   }
 };
+
+
 
   // Filter + Search
   const filteredCustomers = customers.filter((c) => {
@@ -139,6 +154,7 @@ const handleSubmit = async (e) => {
 
   return (
     <>
+     <Toaster position="top-right" reverseOrder={false} />
       <PageTitle>Customers</PageTitle>
       <SectionTitle>All Customers</SectionTitle>
 
@@ -232,6 +248,7 @@ const handleSubmit = async (e) => {
         className="bg-white p-6 rounded shadow-lg max-w-lg mx-auto mt-20"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
+    
         <h2 className="text-xl font-bold mb-4">Add blog for {selectedCustomer?.name}</h2>
         <form onSubmit={handleSubmit}>
           <Label className="mt-2">
