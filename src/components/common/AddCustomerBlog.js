@@ -103,31 +103,30 @@ const handleSubmit = async (e) => {
   if (formValues.image) formData.append("image", formValues.image);
 
   try {
-    // ✅ Send API request
-    await api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    // ✅ Use toast.promise like your product example
+    await toast.promise(
+      api.post(`blogs/addblog/${selectedCustomer._id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
+      {
+        loading: "⏳ Adding blog...",
+        success: "✅ Blog added successfully!",
+        error: "❌ Failed to add blog",
+      }
+    );
+
+    // ✅ Close modal and reset form
+    closeModal();
+    setFormValues({
+      heading: "",
+      description: "",
+      image: null,
+      agree: false,
     });
 
-    // ✅ Show success toast
-    toast.success("✅ Blog added successfully!");
-
-    // ✅ Close modal after short delay so toast is visible
-    setTimeout(() => {
-      closeModal();
-
-      // ✅ Reset form
-      setFormValues({
-        heading: "",
-        description: "",
-        image: null,
-        agree: false,
-      });
-    }, 300);
-
   } catch (error) {
-    // ❌ Show error toast
-    toast.error("❌ Failed to add Blog!");
-    console.error("Add Blog error:", error.response?.data || error.message);
+    // This catch is optional because toast.promise already shows error
+    console.error("Add blog error:", error.response?.data || error.message);
   }
 };
 
