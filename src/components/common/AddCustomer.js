@@ -43,6 +43,15 @@ function AddCustomer() {
       metaTitle: "",
       metaKeywords: "",
       metaDescription: "",
+        businessHours: {
+    monday: { open: "", close: "" },
+    tuesday: { open: "", close: "" },
+    wednesday: { open: "", close: "" },
+    thursday: { open: "", close: "" },
+    friday: { open: "", close: "" },
+    saturday: { open: "", close: "" },
+    sunday: { open: "", close: "" },
+  },
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -60,7 +69,7 @@ function AddCustomer() {
           } else if (key === "profileImage" && values.profileImage) {
             formData.append("profileImage", values.profileImage);
           } else if (
-            !["bannerImage", "profileImage", "galleryImages", "metaKeywords"].includes(
+            !["bannerImage", "profileImage", "galleryImages", "metaKeywords","businessHours"].includes(
               key
             ) &&
             values[key]
@@ -69,10 +78,12 @@ function AddCustomer() {
           }
         });
 
+         formData.append("businessHours", JSON.stringify(values.businessHours));
         // SEO fields
         if (values.metaTitle) formData.append("metaTitle", values.metaTitle);
         if (values.metaDescription)
           formData.append("metaDescription", values.metaDescription);
+      
 
         if (values.metaKeywords) {
           // Convert comma-separated keywords into array JSON string
@@ -266,7 +277,7 @@ function AddCustomer() {
               placeholder="keyword1, keyword2, keyword3"
             />
           </Label>
-
+{/* meta descripton */}
           <Label className="mt-4">
             <span>Meta Description</span>
             <Textarea
@@ -276,6 +287,76 @@ function AddCustomer() {
               placeholder="Enter meta description here"
             />
           </Label>
+
+          {/* Business Hours */}
+{/* Business Hours */}
+<Label className="mt-4">
+  <span>Business Hours</span>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+    {[
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ].map((day) => (
+      <div key={day} className="flex flex-col">
+        <span className="capitalize text-sm font-medium mb-1">{day}</span>
+        <div className="flex gap-2">
+          {/* Open Time */}
+          <select
+            className="border rounded p-2 flex-1"
+            value={formik.values.businessHours?.[day]?.open || ""}
+            onChange={(e) =>
+              formik.setFieldValue(`businessHours.${day}.open`, e.target.value)
+            }
+          >
+            <option value="">Open Time</option>
+            <option value="Closed">Closed</option>
+            {["AM", "PM"].map((period) =>
+              Array.from({ length: 12 }, (_, i) => {
+                const hour = i + 1;
+                const time = `${hour}:00 ${period}`;
+                return (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                );
+              })
+            )}
+          </select>
+
+          {/* Close Time */}
+          <select
+            className="border rounded p-2 flex-1"
+            value={formik.values.businessHours?.[day]?.close || ""}
+            onChange={(e) =>
+              formik.setFieldValue(`businessHours.${day}.close`, e.target.value)
+            }
+          >
+            <option value="">Close Time</option>
+            <option value="Closed">Closed</option>
+            {["AM", "PM"].map((period) =>
+              Array.from({ length: 12 }, (_, i) => {
+                const hour = i + 1;
+                const time = `${hour}:00 ${period}`;
+                return (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                );
+              })
+            )}
+          </select>
+        </div>
+      </div>
+    ))}
+  </div>
+</Label>
+
+
 
           {/* Banner Image */}
           <Label className="mt-4">

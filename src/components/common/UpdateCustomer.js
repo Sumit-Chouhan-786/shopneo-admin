@@ -29,6 +29,15 @@ function UpdateCustomer() {
     metaTitle: "",
     metaKeywords: "",
     metaDescription: "",
+    businessHours: {
+      monday: { open: "", close: "" },
+      tuesday: { open: "", close: "" },
+      wednesday: { open: "", close: "" },
+      thursday: { open: "", close: "" },
+      friday: { open: "", close: "" },
+      saturday: { open: "", close: "" },
+      sunday: { open: "", close: "" },
+    },
   });
 
   const [errors, setErrors] = useState({});
@@ -42,7 +51,8 @@ function UpdateCustomer() {
 
         setCustomer(data);
 
-        setFormValues({
+        setFormValues((prev) => ({
+          ...prev,
           slug: data.slug || "",
           name: data.name || "",
           businessName: data.businessName || "",
@@ -63,7 +73,8 @@ function UpdateCustomer() {
             ? data.metaKeywords.join(", ")
             : data.metaKeywords || "",
           metaDescription: data.metaDescription || "",
-        });
+          businessHours: data.businessHours || prev.businessHours,
+        }));
       } catch (err) {
         toast.error("Failed to fetch customer data");
       }
@@ -80,6 +91,20 @@ function UpdateCustomer() {
     } else {
       setFormValues({ ...formValues, [name]: value });
     }
+  };
+
+  // Handle Business Hours Change
+  const handleBusinessHoursChange = (day, field, value) => {
+    setFormValues((prev) => ({
+      ...prev,
+      businessHours: {
+        ...prev.businessHours,
+        [day]: {
+          ...prev.businessHours[day],
+          [field]: value,
+        },
+      },
+    }));
   };
 
   const validate = () => {
@@ -111,6 +136,8 @@ function UpdateCustomer() {
           .map((k) => k.trim())
           .filter((k) => k);
         formData.append("metaKeywords", JSON.stringify(keywordsArray));
+      } else if (key === "businessHours") {
+        formData.append("businessHours", JSON.stringify(formValues.businessHours));
       } else if (formValues[key]) {
         formData.append(key, formValues[key]);
       }
@@ -146,7 +173,9 @@ function UpdateCustomer() {
               placeholder="unique-slug"
               required
             />
-            {errors.slug && <p className="text-red-500 text-xs">{errors.slug}</p>}
+            {errors.slug && (
+              <p className="text-red-500 text-xs">{errors.slug}</p>
+            )}
           </Label>
 
           {/* Name */}
@@ -157,7 +186,9 @@ function UpdateCustomer() {
               value={formValues.name}
               onChange={handleChange}
             />
-            {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-xs">{errors.name}</p>
+            )}
           </Label>
 
           {/* Business Name */}
@@ -189,7 +220,9 @@ function UpdateCustomer() {
               value={formValues.email}
               onChange={handleChange}
             />
-            {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-xs">{errors.email}</p>
+            )}
           </Label>
 
           {/* Contact */}
@@ -200,7 +233,78 @@ function UpdateCustomer() {
               value={formValues.contact}
               onChange={handleChange}
             />
-            {errors.contact && <p className="text-red-500 text-xs">{errors.contact}</p>}
+            {errors.contact && (
+              <p className="text-red-500 text-xs">{errors.contact}</p>
+            )}
+          </Label>
+
+          {/* Business Hours */}
+          <Label className="mt-4">
+            <span>Business Hours</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              {[
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday",
+              ].map((day) => (
+                <div key={day} className="flex flex-col">
+                  <span className="capitalize text-sm font-medium mb-1">
+                    {day}
+                  </span>
+                  <div className="flex gap-2">
+                    {/* Open Time */}
+                    <select
+                      className="border rounded p-2 flex-1"
+                      value={formValues.businessHours?.[day]?.open || ""}
+                      onChange={(e) =>
+                        handleBusinessHoursChange(day, "open", e.target.value)
+                      }
+                    >
+                      <option value="">Open Time</option>
+                      <option value="Closed">Closed</option>
+                      {["AM", "PM"].map((period) =>
+                        Array.from({ length: 12 }, (_, i) => {
+                          const hour = i + 1;
+                          const time = `${hour}:00 ${period}`;
+                          return (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          );
+                        })
+                      )}
+                    </select>
+
+                    {/* Close Time */}
+                    <select
+                      className="border rounded p-2 flex-1"
+                      value={formValues.businessHours?.[day]?.close || ""}
+                      onChange={(e) =>
+                        handleBusinessHoursChange(day, "close", e.target.value)
+                      }
+                    >
+                      <option value="">Close Time</option>
+                      <option value="Closed">Closed</option>
+                      {["AM", "PM"].map((period) =>
+                        Array.from({ length: 12 }, (_, i) => {
+                          const hour = i + 1;
+                          const time = `${hour}:00 ${period}`;
+                          return (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          );
+                        })
+                      )}
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
           </Label>
 
           {/* SEO Fields */}

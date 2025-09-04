@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create instance
 const api = axios.create({
-  baseURL: "http://localhost:4000/api/v1/",
+  baseURL: "https://shopneo-backend.onrender.com/api/v1/",
   headers: {
     "Content-Type": "application/json",
   },

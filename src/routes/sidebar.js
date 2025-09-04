@@ -21,11 +21,6 @@ const routes = [
     name: 'Add Customer Blog',
   },
   {
-    path: '/app/add-customer-business-hours',
-    icon: 'FormsIcon',
-    name: 'Add Business Hours',
-  },
-  {
     path: '/app/all-customers',
     icon: 'CardsIcon',
     name: 'All Customers',
